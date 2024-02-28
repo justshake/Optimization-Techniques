@@ -12,7 +12,8 @@ c=nchoosek(a,m);
 sol=[];
 for i=1:p
     x=zeros(1,n)
-    B=A(:,c(i,:))  
+    B=A(:,c(i,:))  % Extracts the columns from A based on the current combination, forming a 3xm matrix B.
+    if det(B)~= 0
         X(i,:)=B\b
         if X(i,:)>0
             x(c(i,:))=X(i,:)
