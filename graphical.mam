@@ -1,0 +1,53 @@
+clc
+clear all
+A = [2 -3; -1 1; 1 0; 0 1];
+b = [-6; 1; 0; 0];
+z = @(x1,x2) -4*x1 + 6*x2;
+c1 = @(x1,x2) 2*x1 - 3*x2 + 6;
+c2 = @(x1,x2) -1*x1 + 1*x2 - 1;
+m = length(b);
+x1 = 0:50;
+for i = 1:m
+    x2 = (b(i)-(A(i,1)*x1))/A(i,2);
+    x2 = max(0,x2);
+    if A(i,2) == 0
+        x2 = 0;
+    end
+    plot(x1,x2);
+    hold on;
+end
+
+P = [];
+index = 0;
+for i = 1:m
+    for j = i+1:m
+        asub = A([i,j],:);
+        bsub = b([i,j]);
+       
+        if(det(asub) ~= 0)
+            X = (inv(asub))*bsub;
+            
+            if(X>=0)
+                P = [P,X];
+                index = index+1;
+            end
+        end
+    end
+end
+
+fp = [];
+Z = [];
+for i = 1: length(P)
+    p1 = P(1,i);
+    p2 = P(2,i);
+    if c1(p1,p2)>=0 && c2(p1,p2)<=0
+        fp = [fp,P(:,i)];
+        Z = [Z,z(p1,p2)];
+        plot(p1,p2,'pr');
+        hold on;
+    end
+end
+[opt_value,pos] = max(Z);
+opt_points = fp(:,pos);
+fprintf("Maximum value is: %f\n", opt_value);
+fprintf("Maximum value points is: (%f,%f)", opt_points);
